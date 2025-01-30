@@ -1,0 +1,40 @@
+.dashboard-card {
+    border: none;
+    border-radius: 12px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    transition: transform 0.2s;
+}
+.dashboard-card:hover {
+    transform: translateY(-5px);
+}
+.table th {
+    background-color: #f8f9fa;
+}
+.inventory-action-btn {
+    width: 32px;
+    height: 32px;
+    padding: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 2px;
+}
+.low-stock {
+    color: #dc3545;
+    font-weight: bold;
+}
+.cylinder-type-card {
+    border: 1px solid #dee2e6;
+    border-radius: 8px;
+    margin-bottom: 15px;
+}
+#refreshButton {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    z-index: 1000;
+}
+
+#refreshButton i {
+    margin-right: 5px;
+}

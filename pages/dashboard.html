@@ -1,0 +1,252 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gas Cylinder Management Dashboard</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/dashboard.css">
+</head>
+<body>
+    <div class="container-fluid">
+        <div class="row">
+            <!-- Enhanced Sidebar -->
+            <div class="col-md-2 sidebar p-3">
+                <div class="text-white mb-4 text-center">
+                    <i class="fa-solid fa-fire fa-2x mb-2"></i>
+                    <i class="fa-brands fa-gripfire"></i>
+                    <h4>Gas Management</h4>
+                </div>
+                <nav class="nav flex-column">
+                    <a class="nav-link active" href="/pages/dashboard.html">
+                        <i class="fas fa-home me-2"></i> Dashboard
+                    </a>
+                    <a class="nav-link" href="/pages/token-management.html">
+                        <i class="fas fa-ticket-alt me-2"></i> Requests
+                    </a>
+                    <a class="nav-link" href="/pages/inventory.html">
+                        <i class="fas fa-warehouse me-2"></i> Inventory
+                    </a>
+                    <a class="nav-link" href="/pages/customer.html">
+                        <i class="fas fa-users me-2"></i> Customers
+                    </a>
+                    <a class="nav-link" href="/pages/delivery.html">
+                        <i class="fas fa-shipping-fast"></i> Delivery
+                    </a>
+                    <a class="nav-link" href="/pages/setting.html">
+                        <i class="fas fa-cog me-2"></i> Setting
+                    </a>
+                    <!-- Logout Button -->
+                    <div class="logout-button">
+                        <a class="nav-link text-danger" href="/logout" onclick="handleLogout(event)">
+                            <i class="fas fa-sign-out-alt me-2"></i> Logout
+                        </a>
+                    </div>
+                </nav>
+            </div>
+
+            <!-- Main Content -->
+            <div class="col-md-10 p-4">
+                <!-- Dashboard Overview -->
+                <div id="dashboard" class="page-content active">
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <h2>Dashboard Overview</h2>
+                    </div>
+                   <!-- Stats Cards -->
+                    <div class="row mb-4">
+                        <div class="col-md-4">
+                            <div class="card dashboard-card bg-primary text-white">
+                                <div class="card-body">
+                                    <div class="d-flex justify-content-between">
+                                        <div>
+                                            <h6 class="mb-0">Pending Requests</h6>
+                                            <h2 id="pendingRequestsCount">0</h2>
+                                        </div>
+                                        <i class="fas fa-clock fa-2x opacity-50"></i>
+                                    </div>
+                                    <div class="mt-2 small">
+                                        <span id="pendingTrend">↑ 12% from last week</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-4">
+                            <div class="card dashboard-card bg-success text-white">
+                                <div class="card-body">
+                                    <div class="d-flex justify-content-between">
+                                        <div>
+                                            <h6 class="mb-0">Stock Level</h6>
+                                            <h2 id="availableStockCount">0</h2>
+                                        </div>
+                                        <i class="fas fa-cubes fa-2x opacity-50"></i>
+                                    </div>
+                                    <div class="mt-2 small">
+                                        <div class="progress" style="height: 5px;">
+                                            <div class="progress-bar bg-white" style="width: 0%"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-4">
+                            <div class="card dashboard-card bg-info text-white">
+                                <div class="card-body">
+                                    <div class="d-flex justify-content-between">
+                                        <div>
+                                            <h6 class="mb-0">Delivered Cylinders</h6>
+                                            <h2 id="todayDeliveriesCount">0</h2>
+                                        </div>
+                                        <i class="fas fa-truck fa-2x opacity-50"></i>
+                                    </div>
+                                    <div class="mt-2 small">
+                                        <span id="deliveryEfficiency">0% on time</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    </div>
+                    <!-- Filters -->
+                    <div class="filters-section mb-4">
+                        <div class="row g-3">
+                            <div class="col-md-3">
+                                <select class="form-select" id="statusFilter">
+                                    <option value="">All Statuses</option>
+                                    <option value="Pending">Pending</option>
+                                    <option value="Approved">Approved</option>
+                                    <option value="Cancelled">Cancelled</option>
+                                </select>
+                            </div>
+                            <div class="col-md-3">
+                                <select class="form-select" id="cylinderTypeFilter">
+                                    <option value="">All Types</option>
+                                    <option value="2.3">2.3kg</option>
+                                    <option value="5">5kg</option>
+                                    <option value="12.5">12.5kg</option>
+                                </select>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="input-group">
+                                    <input type="text" class="form-control" id="searchInput" placeholder="Search...">
+                                    <button class="btn btn-outline-secondary" type="button">
+                                        <i class="fas fa-search"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <button class="btn btn-outline-primary w-100" onclick="resetFilters()">
+                                    Reset Filters
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Requests Table -->
+                    <div class="card">
+                        <div class="card-header bg-white">
+                            <h5 class="mb-0">Recent Requests</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <table class="table table-hover">
+                                    <thead>
+                                        <tr>
+                                            <th>NIC</th>
+                                            <th>Customer</th>
+                                            <th>Request Date</th>
+                                            <th>Type</th>
+                                            <th>Quantity</th>
+                                            <th>Status</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="requestsTable"></tbody>
+                                </table>
+                            </div>
+                            <nav>
+                                <ul class="pagination justify-content-end mb-0">
+                                    <li class="page-item"><a class="page-link" href="#">Previous</a></li>
+                                    <li class="page-item active"><a class="page-link" href="#">1</a></li>
+                                    <li class="page-item"><a class="page-link" href="#">2</a></li>
+                                    <li class="page-item"><a class="page-link" href="#">3</a></li>
+                                    <li class="page-item"><a class="page-link" href="#">Next</a></li>
+                                </ul>
+                            </nav>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Enhanced Request Modal -->
+    <div class="modal fade" id="requestModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Request Details</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h6 class="mb-3">Customer Information</h6>
+                            <div class="mb-3">
+                                <label class="form-label">Name</label>
+                                <input type="text" class="form-control" id="customerName" readonly>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">NIC</label>
+                                <input type="text" class="form-control" id="customerNic" readonly>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Phone</label>
+                                <input type="tel" class="form-control" id="customerPhone" readonly>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Email</label>
+                                <input type="email" class="form-control" id="customerEmail" readonly>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <h6 class="mb-3">Request Details</h6>
+                            <div class="mb-3">
+                                <label class="form-label">Cylinder Type</label>
+                                <input type="text" class="form-control" id="cylinderType" readonly>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Quantity</label>
+                                <input type="number" class="form-control" id="cylinderCount" readonly>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Status</label>
+                                <select class="form-select" id="requestStatus">
+                                    <option value="Pending">Pending</option>
+                                    <option value="Approved">Approved</option>
+                                    <option value="Cancelled">Cancelled</option>
+                                    <option value="Cancelled">Completed</option>
+
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Notes</label>
+                                <textarea class="form-control" id="requestNotes" rows="3"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/firebase/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/firebase/9.23.0/firebase-database-compat.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/firebase/9.23.0/firebase-auth-compat.js"></script>
+    <script src="../js/dashboard.js"></script>
+</body>
+</html>

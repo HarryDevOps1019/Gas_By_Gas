@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gas Outlet Login</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome CSS -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/css/login.css">
+</head>
+<body>
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-6 col-lg-4">
+                <div class="login-container">
+                    <div class="logo-container">
+                        <i class="fa-solid fa-fire fa-2x"></i>
+                        <i class="fa-brands fa-gripfire fa-2x"></i>
+                    </div>
+                    <h2 class="text-center mb-4 text-primary">Gas Outlet Login</h2>
+                    <form id="loginForm">
+                        <div class="mb-3">
+                            <label for="loginRegistrationNumber" class="form-label">Registration Number</label>
+                            <input type="text" class="form-control" id="loginRegistrationNumber" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="loginPassword" class="form-label">Password</label>
+                            <div class="input-group">
+                                <input type="password" class="form-control" id="loginPassword" required>
+                                <button class="btn btn-outline-secondary" type="button" id="toggleLoginPassword">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="text-center">
+                            <button type="submit" class="btn btn-primary btn-lg">Login</button>
+                        </div>
+                        <div class="text-center mt-3">
+                            <a href="/outletReg.html" class="text-primary">Register New Outlet</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Login Result Modal -->
+    <div class="modal fade" id="loginResultModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header" id="loginModalHeader">
+                    <h5 class="modal-title" id="loginModalTitle">Login Result</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body" id="loginModalBody">
+                    Login message
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- CryptoJS library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-database-compat.js"></script>
+
+    <script>
+        // Password toggle functionality
+        document.getElementById('toggleLoginPassword').addEventListener('click', function() {
+            const passwordInput = document.getElementById('loginPassword');
+            const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+            passwordInput.setAttribute('type', type);
+            this.querySelector('i').classList.toggle('fa-eye');
+            this.querySelector('i').classList.toggle('fa-eye-slash');
+        });
+    </script>
+    
+    <!-- Custom JavaScript for login -->
+    <script src="/outletlogin.js"></script>
+</body>
+</html>

@@ -1,0 +1,87 @@
+.profile-card {
+    background-color: #fff;
+    border-radius: 15px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    padding: 25px;
+    margin-bottom: 20px;
+    transition: transform 0.3s ease;
+}
+
+.profile-card:hover {
+    transform: translateY(-5px);
+}
+
+.profile-header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 25px;
+}
+
+.profile-icon {
+    background: linear-gradient(135deg, #007bff, #0056b3);
+    color: white;
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 32px;
+    margin-right: 20px;
+    box-shadow: 0 4px 10px rgba(0,123,255,0.3);
+}
+
+.profile-details {
+    flex-grow: 1;
+}
+
+.profile-info div {
+    padding: 10px 0;
+    border-bottom: 1px solid #eee;
+}
+
+.profile-info div:last-child {
+    border-bottom: none;
+}
+
+.settings-section {
+    margin-top: 20px;
+    background-color: #fff;
+    border-radius: 15px;
+    padding: 25px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+}
+
+.form-control {
+    border-radius: 8px;
+    padding: 12px;
+    border: 1px solid #dee2e6;
+    transition: border-color 0.3s ease;
+}
+
+.form-control:focus {
+    border-color: #007bff;
+    box-shadow: 0 0 0 0.2rem rgba(0,123,255,0.25);
+}
+
+.btn {
+    padding: 10px 20px;
+    border-radius: 8px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.btn-primary {
+    background: linear-gradient(135deg, #007bff, #0056b3);
+    border: none;
+}
+
+.btn-danger {
+    background: linear-gradient(135deg, #dc3545, #b02a37);
+    border: none;
+}
+
+.btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+}

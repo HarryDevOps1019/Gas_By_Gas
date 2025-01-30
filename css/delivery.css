@@ -1,0 +1,205 @@
+/* Card styles */
+.card {
+    z-index: 0;
+    background-color: #ECEFF1;
+    padding: 40px 25px;
+    margin-top: 20px;
+    margin-bottom: 0px;
+    border-radius: 15px;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+    }
+
+    .top {
+    padding: 0 8%;
+    }
+
+    /* Progress bar styles */
+    #progressbar {
+    margin: 40px 0;
+    overflow: hidden;
+    color: #455A64;
+    padding-left: 0px;
+    display: flex;
+    justify-content: space-between;
+    }
+
+    #progressbar li {
+    list-style-type: none;
+    font-size: 14px;
+    width: 25%;
+    float: left;
+    position: relative;
+    font-weight: 500;
+    text-align: center;
+    }
+
+    #progressbar .step0:before {
+    font-family: "Font Awesome 6 Free";
+    content: "\f058";
+    font-weight: 900;
+    color: #fff;
+    }
+
+    #progressbar li:before {
+    width: 50px;
+    height: 50px;
+    line-height: 50px;
+    display: block;
+    font-size: 24px;
+    background: #C5CAE9;
+    border-radius: 50%;
+    margin: 0 auto 10px auto;
+    padding: 0px;
+    transition: all 0.3s ease;
+    }
+
+    #progressbar li:after {
+    content: '';
+    width: 100%;
+    height: 4px;
+    background: #C5CAE9;
+    position: absolute;
+    left: 50%;
+    top: 25px;
+    z-index: -1;
+    transition: all 0.3s ease;
+    }
+
+    #progressbar li:last-child:after {
+    display: none;
+    }
+
+    #progressbar li.active:before {
+    background: #651FFF !important;
+    box-shadow: 0 0 15px #651FFF;
+    }
+
+    #progressbar li.active:after {
+    background: #651FFF !important;
+    }
+
+    #progressbar li.active .icon {
+    color: #651FFF !important;
+    }
+
+    /* Icon styles */
+    .icon-content {
+    text-align: center;
+    padding: 20px;
+    }
+
+    .icon-content .icon {
+    font-size: 24px;
+    margin-bottom: 10px;
+    color: #C5CAE9;
+    transition: all 0.3s ease;
+    }
+
+    /* Status label styles */
+    .status-label {
+    font-size: 15px;
+    font-weight: 600;
+    margin: 5px 0;
+    color: #2c3e50;
+    }
+
+    .status-time {
+    color: #666;
+    font-size: 13px;
+    margin-top: 8px;
+    }
+
+    /* Search container styles */
+    .search-container {
+    margin: 20px auto;
+    max-width: 600px;
+    padding: 25px;
+    background: white;
+    border-radius: 15px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    }
+
+    /* Button styles */
+    #complete-delivery {
+    padding: 12px 30px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    background-color: #651FFF;
+    border-color: #651FFF;
+    }
+
+    #complete-delivery:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(101, 31, 255, 0.4);
+    background-color: #5215cc;
+    border-color: #5215cc;
+    }
+
+    .btn-primary {
+    background-color: #651FFF;
+    border-color: #651FFF;
+    }
+
+    .btn-primary:hover {
+    background-color: #5215cc;
+    border-color: #5215cc;
+    }
+
+    /* Utility classes */
+    .hidden {
+    display: none;
+    }
+
+    /* Responsive styles */
+    @media (max-width: 768px) {
+    .sidebar {
+        min-height: auto;
+    }
+    
+    .card {
+        margin-top: 30px;
+        margin-bottom: 30px;
+        padding: 20px 15px;
+    }
+    
+    #progressbar li {
+        font-size: 12px;
+    }
+    
+    #progressbar li:before {
+        width: 40px;
+        height: 40px;
+        line-height: 40px;
+        font-size: 20px;
+    }
+    
+    .status-label {
+        font-size: 13px;
+    }
+    
+    .status-time {
+        font-size: 11px;
+    }
+    
+    .search-container {
+        padding: 15px;
+        margin: 10px;
+    }
+    }
+
+    /* Animation styles */
+    @keyframes pulse {
+    0% {
+        box-shadow: 0 0 0 0 rgba(101, 31, 255, 0.4);
+    }
+    70% {
+        box-shadow: 0 0 0 10px rgba(101, 31, 255, 0);
+    }
+    100% {
+        box-shadow: 0 0 0 0 rgba(101, 31, 255, 0);
+    }
+    }
+
+    .active:before {
+    animation: pulse 2s infinite;
+    }

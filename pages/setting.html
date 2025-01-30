@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gas Cylinder Management Dashboard</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/setting.css">
+
+</head>
+<body class="bg-light">
+    <div class="container-fluid">
+        <div class="row">
+            <!-- Sidebar -->
+            <div class="col-md-2 sidebar p-3">
+                <div class="text-center mb-4">
+                    <i class="fa-solid fa-fire fa-2x mb-2"></i>
+                    <h4>Gas Management</h4>
+                </div>
+                <nav class="nav flex-column">
+                    <a class="nav-link" href="/pages/dashboard.html">
+                        <i class="fas fa-home me-2"></i> Dashboard
+                    </a>
+                    <a class="nav-link" href="/pages/token-management.html">
+                        <i class="fas fa-ticket-alt me-2"></i> Requests
+                    </a>
+                    <a class="nav-link" href="/pages/inventory.html">
+                        <i class="fas fa-warehouse me-2"></i> Inventory
+                    </a>
+                    <a class="nav-link" href="/pages/customer.html">
+                        <i class="fas fa-users me-2"></i> Customers
+                    </a>
+                    <a class="nav-link" href="/pages/delivery.html">
+                        <i class="fas fa-shipping-fast me-2"></i> Delivery
+                    </a>
+                    <a class="nav-link active" href="/pages/setting.html">
+                        <i class="fas fa-cog me-2"></i> Settings
+                    </a>
+                </nav>
+            </div>
+
+            <!-- Main Content -->
+            <div class="col-md-10 p-4">
+                <div class="row">
+                    <!-- Profile Card -->
+                    <div class="col-md-4">
+                        <div class="profile-card">
+                            <div class="profile-header">
+                                <div class="profile-icon">
+                                    <i class="fas fa-user"></i>
+                                </div>
+                                <div class="profile-details">
+                                    <h4 id="profileOutletName" class="mb-1">Gas Outlet Name</h4>
+                                    <p id="profileManagerName" class="text-muted mb-0">Manager Name</p>
+                                </div>
+                            </div>
+                            <div class="profile-info">
+                                <div>
+                                    <i class="fas fa-envelope me-2 text-primary"></i>
+                                    <strong>Email:</strong>
+                                    <span id="profileEmail" class="ms-2">example@email.com</span>
+                                </div>
+                                <div>
+                                    <i class="fas fa-phone me-2 text-primary"></i>
+                                    <strong>Phone:</strong>
+                                    <span id="profilePhone" class="ms-2">+1234567890</span>
+                                </div>
+                                <div>
+                                    <i class="fas fa-map-marker-alt me-2 text-primary"></i>
+                                    <strong>Reg. Number:</strong>
+                                    <span id="profileRegNumber" class="ms-2">REG-12345</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Settings Sections -->
+                    <div class="col-md-8">
+                        <div class="settings-section">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <h4 class="mb-4"><i class="fas fa-user-edit me-2"></i>Update Profile</h4>
+                                    <form id="profileUpdateForm">
+                                        <div class="mb-3">
+                                            <label class="form-label">Outlet Name</label>
+                                            <input type="text" class="form-control" id="outletName" required>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label class="form-label">Manager Name</label>
+                                            <input type="text" class="form-control" id="outletManagerName" required>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label class="form-label">Phone Number</label>
+                                            <input type="tel" class="form-control" id="phoneNumber" required>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label class="form-label">Email Address</label>
+                                            <input type="email" class="form-control" id="email" required>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label class="form-label">Outlet Address</label>
+                                            <textarea class="form-control" id="outletAddress" rows="3" required></textarea>
+                                        </div>
+                                        <button type="submit" class="btn btn-primary w-100">
+                                            <i class="fas fa-save me-2"></i>Update Profile
+                                        </button>
+                                    </form>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <h4 class="mb-4"><i class="fas fa-lock me-2"></i>Change Password</h4>
+                                    <form id="securityForm">
+                                        <div class="mb-3">
+                                            <label class="form-label">Current Password</label>
+                                            <input type="password" class="form-control" id="currentPassword" required>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label class="form-label">New Password</label>
+                                            <input type="password" class="form-control" id="newPassword" required>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label class="form-label">Confirm New Password</label>
+                                            <input type="password" class="form-control" id="confirmPassword" required>
+                                        </div>
+                                        <button type="submit" class="btn btn-danger w-100">
+                                            <i class="fas fa-key me-2"></i>Change Password
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modals -->
+    <div class="modal fade" id="successModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Success</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body"></div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="errorModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title text-danger">Error</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body" id="errorMessage"></div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/firebase/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/firebase/9.23.0/firebase-auth-compat.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/firebase/9.23.0/firebase-database-compat.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
+    <script src="../js/setting.js"></script>
+</body>
+</html>

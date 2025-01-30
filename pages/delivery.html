@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gas Cylinder Delivery Tracking</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/delivery.css">
+    
+</head>
+<body>
+    <div class="container-fluid">
+        <div class="row">
+            <!-- Sidebar -->
+            <div class="col-md-2 sidebar p-3">
+                <div class="text-white mb-4 text-center">
+                    <i class="fa-solid fa-fire fa-2x mb-2"></i>
+                    <h4>Gas Management</h4>
+                </div>
+                <nav class="nav flex-column">
+                    <a class="nav-link" href="/pages/dashboard.html">
+                        <i class="fas fa-home me-2"></i> Dashboard
+                    </a>
+                    <a class="nav-link" href="/pages/token-management.html">
+                        <i class="fas fa-ticket-alt me-2"></i> Requests
+                    </a>
+                    <a class="nav-link" href="/pages/inventory.html">
+                        <i class="fas fa-warehouse me-2"></i> Inventory
+                    </a>
+                    <a class="nav-link" href="/pages/customer.html">
+                        <i class="fas fa-users me-2"></i> Customers
+                    </a>
+                    <a class="nav-link active" href="/pages/delivery.html">
+                        <i class="fas fa-shipping-fast"></i> Delivery
+                    </a>
+                    <a class="nav-link" href="/pages/setting.html">
+                        <i class="fas fa-cog me-2"></i> Setting
+                    </a>
+                </nav>
+            </div>
+
+            <!-- Main Content -->
+            <div class="col-md-10">
+                <div class="search-container">
+                    <div class="input-group mb-3">
+                        <input type="text" id="tracking-input" class="form-control" placeholder="Enter Registration Number">
+                        <button class="btn btn-primary" type="button" onclick="trackDelivery()">
+                            <i class="fas fa-search"></i> Track
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Enhanced Tracking Details -->
+                <div id="tracking-details" class="container px-1 px-md-4 py-5 mx-auto hidden">
+                    <div class="card">
+                        <div class="row d-flex justify-content-between px-3 top">
+                            <div class="d-flex">
+                                <h5>ORDER <span class="text-primary font-weight-bold" id="registration-display">#Y34XDHR</span></h5>
+                            </div>
+                            <div class="d-flex flex-column text-sm-right">
+                                <p class="mb-0">Expected Arrival <span id="expected-arrival">Calculating...</span></p>
+                            </div>
+                        </div>
+                        
+                        <!-- Enhanced Progress Bar -->
+                        <div class="row d-flex justify-content-center">
+                            <div class="col-12">
+                                <ul id="progressbar" class="text-center">
+                                    <li class="step0" id="step1">
+                                        <i class="fas fa-check-circle icon"></i>
+                                        <div class="status-label">Order Confirmed</div>
+                                        <div class="status-time" id="step1-time">Pending</div>
+                                    </li>
+                                    <li class="step0" id="step2">
+                                        <i class="fas fa-cog icon"></i>
+                                        <div class="status-label">Processing</div>
+                                        <div class="status-time" id="step2-time">Pending</div>
+                                    </li>
+                                    <li class="step0" id="step3">
+                                        <i class="fas fa-truck icon"></i>
+                                        <div class="status-label">Out for Delivery</div>
+                                        <div class="status-time" id="step3-time">Pending</div>
+                                    </li>
+                                    <li class="step0" id="step4">
+                                        <i class="fas fa-home icon"></i>
+                                        <div class="status-label">Delivered</div>
+                                        <div class="status-time" id="step4-time">Pending</div>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                        
+                        <div class="text-center mt-4">
+                            <button id="complete-delivery" class="btn btn-primary">
+                                <i class="fas fa-check me-2"></i>Complete Delivery
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/firebase/9.23.0/firebase-app-compat.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/firebase/9.23.0/firebase-database-compat.min.js"></script>
+  <script src="../js/delivery.js"></script>
+   
+    <script type="module">
+
+      class DeliveryTracker {
+        constructor() {
+            // Firebase configuration
+            const firebaseConfig = {
+                apiKey: "AIzaSyDAO3etWS-qat1uFFLSjrslHAo0UJwtVa0",
+                authDomain: "gas-c3c22.firebaseapp.com",
+                databaseURL: "https://gas-c3c22-default-rtdb.firebaseio.com",
+                projectId: "gas-c3c22",
+                storageBucket: "gas-c3c22.firebasestorage.app",
+                messagingSenderId: "334602451880",
+                appId: "1:334602451880:web:24d017ddce0d1f84a83b9d",
+                measurementId: "G-EZTE4CTZS2"
+            };
+    
+            // Initialize Firebase using compat version
+            firebase.initializeApp(firebaseConfig);
+            this.db = firebase.database();
+            
+            // Initialize UI elements
+            this.initializeUI();
+            // Set up event listeners
+            this.setupEventListeners();
+        }
+    
+        initializeUI() {
+            this.ui = {
+                trackingInput: document.querySelector('#tracking-input'),
+                trackingDetails: document.querySelector('#tracking-details'),
+                registrationDisplay: document.querySelector('#registration-display'),
+                completeDeliveryBtn: document.querySelector('#complete-delivery'),
+                progressSteps: document.querySelectorAll('#progressbar li'),
+                timelineStepTimes: Array.from({ length: 4 }, (_, i) => 
+                    document.querySelector(`#step${i + 1}-time`)),
+                expectedArrival: document.querySelector('#expected-arrival')
+            };
+    
+            this.STATUS_MAP = {
+                'Order Confirmed': 1,
+                'Processing': 2,
+                'Out for Delivery': 3,
+                'Delivered': 4
+            };
+        }
+    
+        setupEventListeners() {
+            // Complete delivery button handler
+            this.ui.completeDeliveryBtn.addEventListener('click', () => this.completeDelivery());
+            
+            // Enter key support for tracking input
+            this.ui.trackingInput.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') {
+                    this.trackDelivery();
+                }
+            });
+    
+            // Initialize tooltips if Bootstrap is available
+            if (typeof bootstrap !== 'undefined') {
+                const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]');
+                tooltipTriggerList.forEach(el => new bootstrap.Tooltip(el));
+            }
+        }
+    
+        calculateExpectedArrival(status) {
+            const now = new Date();
+            let arrivalTime = new Date(now);
+    
+            switch(status) {
+                case 'Order Confirmed':
+                    arrivalTime.setHours(now.getHours() + 4);
+                    break;
+                case 'Processing':
+                    arrivalTime.setHours(now.getHours() + 3);
+                    break;
+                case 'Out for Delivery':
+                    arrivalTime.setHours(now.getHours() + 1);
+                    break;
+                case 'Delivered':
+                    return 'Delivered';
+            }
+    
+            return arrivalTime.toLocaleTimeString();
+        }
+    
+        updateProgress(status) {
+            const currentStep = this.STATUS_MAP[status] || 0;
+            
+            this.ui.progressSteps.forEach((step, index) => {
+                const icon = step.querySelector('.icon');
+                const statusLabel = step.querySelector('.status-label');
+                
+                if (index < currentStep) {
+                    step.classList.add('active');
+                    if (icon) {
+                        icon.style.color = '#651FFF';
+                        icon.style.opacity = '1';
+                    }
+                    if (statusLabel) {
+                        statusLabel.style.color = '#651FFF';
+                    }
+                } else {
+                    step.classList.remove('active');
+                    if (icon) {
+                        icon.style.color = '#C5CAE9';
+                        icon.style.opacity = '0.6';
+                    }
+                    if (statusLabel) {
+                        statusLabel.style.color = '#2c3e50';
+                    }
+                }
+            });
+    
+            this.ui.expectedArrival.textContent = this.calculateExpectedArrival(status);
+        }
+    
+        resetProgress() {
+            this.ui.progressSteps.forEach(step => {
+                step.classList.remove('active');
+                const icon = step.querySelector('.icon');
+                const statusLabel = step.querySelector('.status-label');
+                
+                if (icon) {
+                    icon.style.color = '#C5CAE9';
+                    icon.style.opacity = '0.6';
+                }
+                if (statusLabel) {
+                    statusLabel.style.color = '#2c3e50';
+                }
+            });
+    
+            this.ui.timelineStepTimes.forEach(timeElement => {
+                timeElement.textContent = 'Pending';
+            });
+        }
+    
+        formatTimestamp(timestamp) {
+            if (!timestamp) return 'Pending';
+            const date = new Date(timestamp);
+            return date.toLocaleTimeString();
+        }
+    
+        async trackDelivery() {
+            const registrationNumber = this.ui.trackingInput.value.trim();
+            
+            if (!registrationNumber) {
+                alert('Please enter a valid registration number');
+                return;
+            }
+    
+            try {
+                this.resetProgress();
+                
+                const snapshot = await this.db.ref(`OutletGasRequest/${registrationNumber}`).once('value');
+    
+                if (!snapshot.exists()) {
+                    alert('Registration number not found');
+                    return;
+                }
+    
+                const data = snapshot.val();
+                
+                this.ui.trackingDetails.classList.remove('hidden');
+                this.ui.registrationDisplay.textContent = registrationNumber;
+                
+                this.updateProgress(data.status);
+                
+                const timestamps = {
+                    'Order Confirmed': data.step1Time,
+                    'Processing': data.step2Time,
+                    'Out for Delivery': data.step3Time,
+                    'Delivered': data.step4Time
+                };
+    
+                Object.entries(timestamps).forEach(([_, time], index) => {
+                    this.ui.timelineStepTimes[index].textContent = this.formatTimestamp(time);
+                });
+    
+                this.setupRealtimeUpdates(registrationNumber);
+    
+            } catch (error) {
+                console.error('Error tracking delivery:', error);
+                alert('Failed to fetch tracking information');
+            }
+        }
+    
+        async completeDelivery() {
+            const registrationNumber = this.ui.registrationDisplay.textContent;
+            
+            if (!registrationNumber) {
+                alert('Please track a delivery first');
+                return;
+            }
+    
+            try {
+                const confirmed = confirm('Are you sure you want to mark this delivery as complete?');
+                if (!confirmed) return;
+    
+                await this.db.ref(`OutletGasRequest/${registrationNumber}`).update({
+                    status: 'Delivered',
+                    step4Time: new Date().toISOString()
+                });
+                
+                alert('Delivery completed successfully!');
+                this.updateProgress('Delivered');
+                
+            } catch (error) {
+                console.error('Error completing delivery:', error);
+                alert('Failed to complete delivery');
+            }
+        }
+    
+        setupRealtimeUpdates(registrationNumber) {
+            const trackingRef = this.db.ref(`OutletGasRequest/${registrationNumber}`);
+            trackingRef.on('value', (snapshot) => {
+                if (snapshot.exists()) {
+                    const data = snapshot.val();
+                    this.updateProgress(data.status);
+                    
+                    if (data.status === 'Delivered' && data.step4Time) {
+                        this.ui.timelineStepTimes[3].textContent = this.formatTimestamp(data.step4Time);
+                    }
+                }
+            });
+        }
+    }
+    
+    // Initialize the tracker when the DOM is loaded
+    document.addEventListener('DOMContentLoaded', () => {
+        const tracker = new DeliveryTracker();
+        // Make trackDelivery available globally
+        window.trackDelivery = () => tracker.trackDelivery();
+    });
+    </script>
+</body>
+</html>

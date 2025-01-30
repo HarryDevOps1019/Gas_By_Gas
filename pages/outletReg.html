@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gas Outlet Registration</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome CSS -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/css/register.css">
+</head>
+<body>
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-8 col-lg-6">
+                <div class="registration-container">
+                    <div class="logo-container">
+                        <i class="fa-solid fa-fire fa-2x"></i>
+                        <i class="fa-brands fa-gripfire fa-2x"></i>
+                    </div>
+                    <h2 class="text-center mb-4 text-primary">Gas Outlet Registration</h2>
+                    <form id="gasOutletForm">
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="outletName" class="form-label">Outlet Name</label>
+                                <input type="text" class="form-control" id="outletName" required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="outletManagerName" class="form-label">Outlet Manager Name</label>
+                                <input type="text" class="form-control" id="outletManagerName" required>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="registrationNumber" class="form-label">Outlet Registration Number</label>
+                                <input type="text" class="form-control" id="registrationNumber" required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="phoneNumber" class="form-label">Phone Number</label>
+                                <input type="tel" class="form-control" id="phoneNumber" required 
+                                       pattern="[0-9]{10}" title="Please enter a 10-digit phone number">
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="outletAddress" class="form-label">Outlet Address</label>
+                            <textarea class="form-control" id="outletAddress" rows="3" required></textarea>
+                        </div>
+                        <div class="mb-3">
+                            <label for="email" class="form-label">Email</label>
+                            <input type="email" class="form-control" id="email" required>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="newPassword" class="form-label">New Password</label>
+                                <div class="input-group">
+                                    <input type="password" class="form-control" id="newPassword" required
+                                           minlength="8" 
+                                           pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*]).{8,}"
+                                           title="Must contain at least one number, one uppercase, one lowercase letter, one special character, and be at least 8 characters long">
+                                    <button class="btn btn-outline-secondary" type="button" id="togglePassword1">
+                                        <i class="fas fa-eye"></i>
+                                    </button>
+                                </div>
+                                <small class="form-text text-muted">
+                                    Password must be 8+ chars, include uppercase, lowercase, number, and special character
+                                </small>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="confirmPassword" class="form-label">Confirm Password</label>
+                                <div class="input-group">
+                                    <input type="password" class="form-control" id="confirmPassword" required>
+                                    <button class="btn btn-outline-secondary" type="button" id="togglePassword2">
+                                        <i class="fas fa-eye"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="text-center">
+                            <button type="submit" class="btn btn-primary btn-lg">Register Outlet</button>
+                        </div>
+                        <div class="text-center mt-3">
+                            <a href="/outletlogin.html" class="text-primary">Login</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Success Modal -->
+    <div class="modal fade" id="successModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header bg-success text-white">
+                    <h5 class="modal-title">Registration Successful</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <i class="fas fa-check-circle text-success me-2"></i>
+                    Your Gas Outlet has been registered successfully!
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-success" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Error Modal -->
+    <div class="modal fade" id="errorModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header bg-danger text-white">
+                    <h5 class="modal-title">Registration Error</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <i class="fas fa-exclamation-triangle text-danger me-2"></i>
+                    <span id="errorMessage">An error occurred during registration.</span>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS and dependencies -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- CryptoJS library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-database-compat.js"></script>
+    
+    <script>
+        // Password toggle functionality
+        document.getElementById('togglePassword1').addEventListener('click', function() {
+            const passwordInput = document.getElementById('newPassword');
+            const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+            passwordInput.setAttribute('type', type);
+            this.querySelector('i').classList.toggle('fa-eye');
+            this.querySelector('i').classList.toggle('fa-eye-slash');
+        });
+
+        document.getElementById('togglePassword2').addEventListener('click', function() {
+            const passwordInput = document.getElementById('confirmPassword');
+            const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+            passwordInput.setAttribute('type', type);
+            this.querySelector('i').classList.toggle('fa-eye');
+            this.querySelector('i').classList.toggle('fa-eye-slash');
+        });
+    </script>
+    
+    <!-- Custom JavaScript for form handling -->
+    <script src="outletReg.js"></script>
+</body>
+</html>
