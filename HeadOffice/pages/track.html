@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gas System - Delivery Tracking</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        .sidebar {
+            min-height: 100vh;
+            background-color: #252627;
+        }
+        .nav-link {
+            color: white;
+            padding: 10px;
+            margin: 5px 0;
+            border-radius: 5px;
+        }
+        .nav-link:hover {
+            background-color: #495057;
+        }
+        .nav-link.active {
+            background-color: #0d6efd;
+        }
+        .tracking-steps {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            padding: 20px 0;
+            position: relative;
+        }
+        .tracking-step {
+            flex: 1;
+            text-align: center;
+            position: relative;
+        }
+        .tracking-step::after {
+            content: '';
+            position: absolute;
+            top: 16px;
+            left: 50%;
+            width: 100%;
+            height: 2px;
+            background: #dee2e6;
+        }
+        .tracking-step:last-child::after {
+            display: none;
+        }
+        .tracking-step.completed::after {
+            background: #28a745;
+        }
+        .tracking-step.completed .step-icon {
+            background: #28a745;
+            border-color: #28a745;
+            color: white;
+        }
+        .step-icon {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            border: 2px solid #dee2e6;
+            background: #fff;
+            color: #6c757d;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 10px;
+            position: relative;
+            z-index: 1;
+        }
+        .step-content {
+            padding: 0 10px;
+        }
+        .status-button {
+            margin-top: 10px;
+            width: 100%;
+            max-width: 150px;
+        }
+        .delivery-card {
+            transition: all 0.3s ease;
+        }
+        .delivery-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        .logo-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 20px;
+            color: #f3f3f3;
+            gap: 10px;
+        }
+        .fa-brands{
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container-fluid">
+        <div class="row">
+            <!-- Sidebar -->
+            <div class="col-md-2 sidebar p-3">
+                <div class="logo-container">
+                    <i class="fa-solid fa-fire fa-2x"></i>
+                    <i class="fa-brands fa-gripfire fa-1x align-bottom"></i>
+                </div>
+                <div class="text-white mb-4 text-sm-center">
+                    <h4>Gas Management</h4>
+                </div>
+                <nav class="nav flex-column">
+                    <a class="nav-link" href="/index.html" data-page="dashboard">
+                        <i class="fas fa-home me-2"></i> Dashboard
+                    </a>
+                    <a class="nav-link" href="/Outlet-Schedule-Dashboard.html" data-page="Schedule">
+                        <i class="fas fa-users me-2"></i> Schedule
+                    </a>
+                    <a class="nav-link active" href="/track.html" data-page="tracking">
+                        <i class="fas fa-truck me-2"></i> Tracking
+                    </a>
+                    <a class="nav-link" href="/inventory.html" data-page="inventory">
+                        <i class="fas fa-ticket me-2"></i> Inventory
+                    </a>
+                    <a class="nav-link" href="/outlet-report.html" data-page="reports">
+                        <i class="fas fa-chart-bar me-2"></i> Outlet report
+                    </a>
+                </nav>
+            </div>
+
+            <!-- Main Content -->
+            <div class="col-md-10 p-4">
+                <!-- Search Tracking -->
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <h5 class="card-title">Track Your Delivery</h5>
+                        <div class="row">
+                            <div class="col-md-8">
+                                <div class="input-group">
+                                    <input type="text" class="form-control" placeholder="Enter Tracking ID" id="trackingInput">
+                                    <button class="btn btn-primary" onclick="trackDelivery()">
+                                        <i class="fas fa-search"></i> Track
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Horizontal Tracking Timeline with Buttons -->
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h5 class="mb-0">Tracking Timeline</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="tracking-steps">
+                            <div class="tracking-step" id="step1">
+                                <div class="step-icon">
+                                    <i class="fas fa-check"></i>
+                                </div>
+                                <div class="step-content">
+                                    <h6 class="mb-1">Order Confirmed</h6>
+                                    <small class="text-muted timestamp">Pending</small>
+                                    <button class="btn btn-sm btn-primary status-button" onclick="updateStatus(1)">
+                                        Confirm Order
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="tracking-step" id="step2">
+                                <div class="step-icon">
+                                    <i class="fas fa-cog"></i>
+                                </div>
+                                <div class="step-content">
+                                    <h6 class="mb-1">Processing</h6>
+                                    <small class="text-muted timestamp">Pending</small>
+                                    <button class="btn btn-sm btn-primary status-button" onclick="updateStatus(2)" disabled>
+                                        Start Processing
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="tracking-step" id="step3">
+                                <div class="step-icon">
+                                    <i class="fas fa-box"></i>
+                                </div>
+                                <div class="step-content">
+                                    <h6 class="mb-1">Dispatched</h6>
+                                    <small class="text-muted timestamp">Pending</small>
+                                    <button class="btn btn-sm btn-primary status-button" onclick="updateStatus(3)" disabled>
+                                        Dispatch Order
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="tracking-step" id="step4">
+                                <div class="step-icon">
+                                    <i class="fas fa-truck"></i>
+                                </div>
+                                <div class="step-content">
+                                    <h6 class="mb-1">Out for Delivery</h6>
+                                    <small class="text-muted timestamp">Pending</small>
+                                    <button class="btn btn-sm btn-primary status-button" onclick="updateStatus(4)" disabled>
+                                        Start Delivery
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="tracking-step" id="step5">
+                                <div class="step-icon">
+                                    <i class="fas fa-box-check"></i>
+                                </div>
+                                <div class="step-content">
+                                    <h6 class="mb-1">Delivered</h6>
+                                    <small class="text-muted timestamp">Pending</small>
+                                    <button class="btn btn-sm btn-primary status-button" onclick="updateStatus(5)" disabled>
+                                        Mark Delivered
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Delivery Details -->
+                <div class="card mt-4">
+                    <div class="card-header">
+                        <h5 class="mb-0">Delivery Details</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-3">
+                                <h6>Order Information</h6>
+                                <table class="table table-borderless">
+                                    <tr>
+                                        <td>Outletname:</td>
+                                        <td id="customerDisplay">N/A</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Tracking ID:</td>
+                                        <td><strong id="trackingIdDisplay">N/A</strong></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Order Date:</td>
+                                        <td id="orderDateDisplay">N/A</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Cylinders:</td>
+                                        <td id="cylindersDisplay">N/A</td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/js/bootstrap.bundle.min.js"></script>
+    <script src="track.js" type="module"></script>
+</body>
+</html>

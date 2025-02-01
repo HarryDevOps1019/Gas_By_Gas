@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gas Cylinder Management System</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        .sidebar {
+            min-height: 100vh;
+            background-color:#252627;
+        }
+        .nav-link {
+            color: white;
+            padding: 10px;
+            margin: 5px 0;
+            border-radius: 5px;
+        }
+        .nav-link:hover {
+            background-color: #495057;
+        }
+        .nav-link.active {
+            background-color: #0d6efd;
+        }
+        .customer-card {
+            transition: transform 0.2s;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .customer-card:hover {
+            transform: translateY(-5px);
+        }
+        .dashboard-card {
+            border: none;
+            border-radius: 10px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+        }
+        .page-content {
+            display: none;
+        }
+        .page-content.active {
+            display: block;
+        }
+        /* Table Styles */
+        .table-responsive {
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            background: white;
+        }
+
+        .sortable {
+            cursor: pointer;
+            position: relative;
+            padding-right: 25px !important;
+        }
+
+        .sortable i {
+            position: absolute;
+            right: 8px;
+            top: 50%;
+            transform: translateY(-50%);
+            opacity: 0.3;
+            transition: opacity 0.2s;
+        }
+
+        .sortable:hover i {
+            opacity: 1;
+        }
+
+        .sortable.active i {
+            opacity: 1;
+            color: #0d6efd;
+        }
+
+        .filter-section {
+            background: white;
+            padding: 1rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .table th {
+            background-color: #f8f9fa;
+            border-bottom: 2px solid #dee2e6;
+        }
+
+        .table tbody tr:hover {
+            background-color: #f8f9fa;
+        }
+
+        .showing-entries {
+            color: #6c757d;
+            font-size: 0.9rem;
+        }
+
+        .pagination-buttons .btn {
+            min-width: 100px;
+        }
+
+        /* Loading State */
+        .loading-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(255,255,255,0.8);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .loading-spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #0d6efd;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Logout Button Styles */
+        .btn-logout {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 10px;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            margin-top: 20rem;
+        }
+
+        .btn-logout:hover {
+            background: rgba(255, 255, 255, 0.2);
+            border-color: rgba(255, 255, 255, 0.3);
+            color: white;
+        }
+
+        .logo-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 20px;
+            color: #f3f3f3;
+            gap: 10px;
+        }
+        .fa-brands{
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container-fluid">
+        <div class="row">
+            <!-- Sidebar -->
+            <div class="col-md-2 sidebar p-3">
+                <div class="logo-container">
+                    <i class="fa-solid fa-fire fa-2x"></i>
+                    <i class="fa-brands fa-gripfire fa-1x align-bottom"></i>
+                </div>
+                <div class="text-white mb-4 text-sm-center">
+                    <h4>Gas Management</h4>
+                </div>
+                <nav class="nav flex-column d-flex justify-content-between">
+                    <div class="nav-links">
+                        <a class="nav-link active" href="#" data-page="dashboard">
+                            <i class="fas fa-home me-2"></i> Dashboard
+                        </a>
+                        <a class="nav-link" href="/Outlet-Schedule-Dashboard.html" data-page="Schedule">
+                            <i class="fas fa-users me-2"></i> Schedule
+                        </a>
+                        <a class="nav-link" href="/track.html" data-page="tracking">
+                            <i class="fas fa-truck me-2"></i> Tracking
+                        </a>
+                        <a class="nav-link" href="/inventory.html" data-page="inventory">
+                            <i class="fas fa-ticket me-2"></i> Inventory
+                        </a>
+                        <a class="nav-link" href="/outlet-report.html" data-page="reports">
+                            <i class="fas fa-chart-bar me-2"></i> Outlet report
+                        </a>
+                    </div>
+                </nav>
+                <div class="mt-auto">
+                    <button class="btn btn-logout w-100" id="logoutBtn">
+                        <i class="fas fa-sign-out-alt me-2"></i> Logout
+                    </button>
+                </div>
+            </div>
+
+            <!-- Main Content -->
+            <div class="col-md-10 p-4">
+                <!-- Dashboard -->
+                <div id="dashboard" class="page-content active">
+                    <h2 class="mb-4">Dashboard Overview</h2>
+                    <div class="row mb-4">
+                        <div class="col-md-3">
+                            <div class="card dashboard-card bg-primary text-white">
+                                <div class="card-body">
+                                    <h5>Pending Requests</h5>
+                                    <h2 id="pendingRequestsCount">0</h2>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="card dashboard-card bg-success text-white">
+                                <div class="card-body">
+                                    <h5>Available Stock</h5>
+                                    <h2 id="availableStockCount">0</h2>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="card dashboard-card bg-warning text-white">
+                                <div class="card-body">
+                                    <h5>Today's Deliveries</h5>
+                                    <h2 id="todayDeliveriesCount">0</h2>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Filter Section -->
+                    <div class="filter-section mb-3">
+                        <div class="row g-3">
+                            <div class="col-md-4">
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="fas fa-search"></i></span>
+                                    <input type="text" id="searchInput" class="form-control" placeholder="Search any field...">
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <select id="filterManager" class="form-select">
+                                    <option value="">Filter by Manager</option>
+                                </select>
+                            </div>
+                            <div class="col-md-3">
+                                <select id="entriesPerPage" class="form-select">
+                                    <option value="5">5 entries</option>
+                                    <option value="10" selected>10 entries</option>
+                                    <option value="25">25 entries</option>
+                                    <option value="50">50 entries</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Table Section -->
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th class="sortable" data-sort="outletId">Outlet ID <i class="fas fa-sort"></i></th>
+                                    <th class="sortable" data-sort="outletName">Outlet Name <i class="fas fa-sort"></i></th>
+                                    <th class="sortable" data-sort="outletManagerName">Manager Name <i class="fas fa-sort"></i></th>
+                                    <th class="sortable" data-sort="outletAddress">Address <i class="fas fa-sort"></i></th>
+                                    <th class="sortable" data-sort="phoneNumber">Phone Number <i class="fas fa-sort"></i></th>
+                                    <th class="sortable" data-sort="email">Email <i class="fas fa-sort"></i></th>
+                                </tr>
+                            </thead>
+                            <tbody id="requestsTable"></tbody>
+                        </table>
+                    </div>
+
+                    <!-- Pagination -->
+                    <div class="d-flex justify-content-between align-items-center mt-3">
+                        <div class="showing-entries">
+                            Showing <span id="startEntry">1</span> to <span id="endEntry">10</span> of <span id="totalEntries">0</span> entries
+                        </div>
+                        <div class="pagination-buttons">
+                            <button id="prevPage" class="btn btn-outline-primary btn-sm me-2">Previous</button>
+                            <button id="nextPage" class="btn btn-outline-primary btn-sm">Next</button>
+                        </div>
+                    </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/js/bootstrap.bundle.min.js"></script>
+    <script src="app.js" type="module"></script>
+</body>
+</html>

@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cylinder Inventory Dashboard</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/firebase/9.6.1/firebase-app-compat.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/firebase/9.6.1/firebase-database-compat.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            background-color: #f0f2f5;
+            
+        }
+
+        .table-container{
+            width: 85%;
+            margin-left: 5rem;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            margin-left: 10px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 2rem;
+            color: #1a237e;
+        }
+
+        .stats-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px,1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: white;
+            border-radius: 8px;
+            padding: 1.25rem;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+
+        .stat-card h3 {
+            color: #666;
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+            text-transform: uppercase;
+        }
+
+        .stat-value {
+            font-size: 2rem;
+            color: #1a237e;
+            font-weight: bold;
+        }
+
+        .cylinder-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .cylinder-card {
+            background: white;
+            border-radius: 8px;
+            padding: 1.5rem;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .cylinder-card h3 {
+            color: #1a237e;
+            margin-bottom: 1rem;
+            text-align: center;
+        }
+
+        .cylinder-stats {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 0.5rem;
+        }
+
+        .cylinder-stat-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.5rem;
+            background: #f8f9fa;
+            border-radius: 4px;
+        }
+
+        .input-form {
+            background: white;
+            border-radius: 10px;
+            padding: 2rem;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-top: 2rem;
+        }
+
+        .form-title {
+            color: #1a237e;
+            font-size: 1.25rem;
+            margin-bottom: 1.5rem;
+            text-align: center;
+        }
+
+        .input-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .input-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: #424242;
+            font-weight: bold;
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 0.75rem;
+            border: 2px solid #e0e0e0;
+            border-radius: 6px;
+            font-size: 1rem;
+            transition: border-color 0.3s;
+        }
+
+        .input-group select {
+            width: 100%;
+            padding: 0.75rem;
+            border: 2px solid #e0e0e0;
+            border-radius: 6px;
+            font-size: 1rem;
+            transition: border-color 0.3s;
+        }
+
+        .btn {
+            background-color: #1a237e;
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 1rem;
+            width: 100%;
+            transition: background-color 0.3s;
+        }
+
+        .btn:hover {
+            background-color: #283593;
+        }
+
+        .last-updated {
+            text-align: center;
+            color: #666;
+            font-size: 0.9rem;
+            margin-top: 1rem;
+        }
+        .sidebar {
+            width: 250px;
+            height: 100vh;
+            background: #252627;
+            position: fixed;
+            left: 0;
+            top: 0;
+            padding: 1rem;
+            color: white;
+        }
+
+        .nav-link {
+            color: white;
+            padding: 10px;
+            margin: 5px 0;
+            border-radius: 5px;
+            transition: background-color 0.3s; /* Smooth transition */
+        }
+
+        .nav-link:hover {
+            background-color: #495057;
+        }
+
+        .nav-link.active {
+            background-color: #0d6efd;
+        }
+
+        .table-container {
+            margin-left: 220px; /* Adjust for fixed sidebar */
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .table-title {
+            font-size: 24px;
+            margin-bottom: 15px;
+            color: #333;
+        }
+
+        .btn-confirm {
+            background-color: #28a745;
+            color: white;
+        }
+
+        .btn-cancel {
+            background-color: #c91d1d;
+            color: white;
+        }
+        .logo-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 20px;
+            color: #f3f3f3;
+            gap: 10px;
+        }
+        .fa-brands{
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container-fluid">
+        <div class="row">
+            <!-- Sidebar -->
+            <div class="col-md-2 sidebar p-3">
+                <div class="logo-container">
+                    <i class="fa-solid fa-fire fa-2x"></i>
+                    <i class="fa-brands fa-gripfire fa-1x align-bottom"></i>
+                </div>
+                <div class="text-white mb-4 text-sm-center">
+                    <h4>Gas Management</h4>
+                </div>
+        <nav class="nav flex-column">
+            <a class="nav-link" href="/index.html" data-page="dashboard">
+                <i class="fas fa-home me-2"></i> Dashboard
+            </a>
+            <a class="nav-link" href="/Outlet-Schedule-Dashboard.html" data-page="Schedule">
+                <i class="fas fa-users me-2"></i> Schedule
+            </a>
+            <a class="nav-link" href="/track.html" data-page="tracking">
+                <i class="fas fa-truck me-2"></i> Tracking
+            </a>
+            <a class="nav-link active" href="/inventory.html" data-page="inventory">
+                <i class="fas fa-ticket me-2"></i> Inventory
+            </a>
+            <a class="nav-link" href="/outlet-report.html" data-page="reports">
+                <i class="fas fa-chart-bar me-2"></i> Outlet Report
+            </a>
+        </nav>
+    </div>
+    <div class="table-container">
+        <div class="container">
+            <div class="header">
+                <h1>Cylinder Inventory Dashboard</h1>
+            </div>
+
+            <div class="stats-cards">
+                <div class="stat-card">
+                    <h3>Filled Cylinders</h3>
+                    <div id="filledCount" class="stat-value">0</div>
+                </div>
+                <div class="stat-card">
+                    <h3>Empty Cylinders</h3>
+                    <div id="emptyCount" class="stat-value">0</div>
+                </div>
+                <div class="stat-card">
+                    <h3>Produced This Month</h3>
+                    <div id="producedCount" class="stat-value">0</div>
+                </div>
+                <div class="stat-card">
+                    <h3>Total Cylinders</h3>
+                    <div id="totalCount" class="stat-value">0</div>
+                </div>
+            </div>
+
+            <div class="cylinder-cards">
+                <div class="cylinder-card">
+                    <h3>3.2KG Cylinders</h3>
+                    <div class="cylinder-stats">
+                        <div class="cylinder-stat-item">
+                            <span>Filled:</span>
+                            <span id="3-2kg-filled">0</span>
+                        </div>
+                        <div class="cylinder-stat-item">
+                            <span>Empty:</span>
+                            <span id="3-2kg-empty">0</span>
+                        </div>
+                        <div class="cylinder-stat-item">
+                            <span>Produced:</span>
+                            <span id="3-2kg-produced">0</span>
+                        </div>
+                        <div class="cylinder-stat-item">
+                            <span>Total:</span>
+                            <span id="3-2kg-total">0</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="cylinder-card">
+                    <h3>5KG Cylinders</h3>
+                    <div class="cylinder-stats">
+                        <div class="cylinder-stat-item">
+                            <span>Filled:</span>
+                            <span id="5kg-filled">0</span>
+                        </div>
+                        <div class="cylinder-stat-item">
+                            <span>Empty:</span>
+                            <span id="5kg-empty">0</span>
+                        </div>
+                        <div class="cylinder-stat-item">
+                            <span>Produced:</span>
+                            <span id="5kg-produced">0</span>
+                        </div>
+                        <div class="cylinder-stat-item">
+                            <span>Total:</span>
+                            <span id="5kg-total">0</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="cylinder-card">
+                    <h3>12.5KG Cylinders</h3>
+                    <div class="cylinder-stats">
+                        <div class="cylinder-stat-item">
+                            <span>Filled:</span>
+                            <span id="12-5kg-filled">0</span>
+                        </div>
+                        <div class="cylinder-stat-item">
+                            <span>Empty:</span>
+                            <span id="12-5kg-empty">0</span>
+                        </div>
+                        <div class="cylinder-stat-item">
+                            <span>Produced:</span>
+                            <span id="12-5kg-produced">0</span>
+                        </div>
+                        <div class="cylinder-stat-item">
+                            <span>Total:</span>
+                            <span id="12-5kg-total">0</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="cylinder-card">
+                    <h3>37.5KG Cylinders</h3>
+                    <div class="cylinder-stats">
+                        <div class="cylinder-stat-item">
+                            <span>Filled:</span>
+                            <span id="37-5kg-filled">0</span>
+                        </div>
+                        <div class="cylinder-stat-item">
+                            <span>Empty:</span>
+                            <span id="37-5kg-empty">0</span>
+                        </div>
+                        <div class="cylinder-stat-item">
+                            <span>Produced:</span>
+                            <span id="37-5kg-produced">0</span>
+                        </div>
+                        <div class="cylinder-stat-item">
+                            <span>Total:</span>
+                            <span id="37-5kg-total">0</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="input-form">
+                <h2 class="form-title">Update Inventory</h2>
+                <div class="input-group">
+                    <label for="cylinderType">Cylinder Type</label>
+                    <select id="cylinderType">
+                        <option value="3-2">3.2KG</option>
+                        <option value="5">5KG</option>
+                        <option value="12-5">12.5KG</option>
+                        <option value="37-5">37.5KG</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label for="filled">Filled Cylinders</label>
+                    <input type="number" id="filled" min="0" placeholder="Enter number of filled cylinders">
+                </div>
+                <div class="input-group">
+                    <label for="empty">Empty Cylinders</label>
+                    <input type="number" id="empty" min="0" placeholder="Enter number of empty cylinders">
+                </div>
+                <div class="input-group">
+                    <label for="produced">Produced This Month</label>
+                    <input type="number" id="produced" min="0" placeholder="Enter number of produced cylinders">
+                </div>
+                <button class="btn" onclick="updateInventory()">Update Inventory</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/js/bootstrap.bundle.min.js"></script>
+    <script src="inventory.js" type="module"></script>
+</body>
+</html>
+
+
+
