@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Outlet Request Schedule</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        .sidebar {
+            min-height: 100vh;
+            background-color: #252627;
+        }
+        .nav-link {
+            color: white;
+            padding: 10px;
+            margin: 5px 0;
+            border-radius: 5px;
+        }
+        .nav-link:hover {
+            background-color: #495057;
+        }
+        .nav-link.active {
+            background-color: #0d6efd;
+        }
+        
+        .table-container {
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .table-title {
+            font-size: 24px;
+            margin-bottom: 15px;
+            color: #333;
+        }
+        
+        .btn-confirm {
+            background-color: #28a745;
+            color: white;
+        }
+        
+        .btn-cancel {
+            background-color: #c91d1d;
+            color: white;
+        }
+        .logo-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 20px;
+            color: #f3f3f3;
+            gap: 10px;
+        }
+        .fa-brands{
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container-fluid">
+        <div class="row">
+            <!-- Sidebar -->
+            <div class="col-md-2 sidebar p-3">
+                <div class="logo-container">
+                    <i class="fa-solid fa-fire fa-2x"></i>
+                    <i class="fa-brands fa-gripfire fa-1x align-bottom"></i>
+                </div>
+                <div class="text-white mb-4 text-sm-center">
+                    <h4>Gas Management</h4>
+                </div>
+                <nav class="nav flex-column">
+                    <a class="nav-link" href="/index.html" data-page="dashboard">
+                        <i class="fas fa-home me-2"></i> Dashboard
+                    </a>
+                    <a class="nav-link active" href="/Outlet-Schedule-Dashboard.html" data-page="Schedule">
+                        <i class="fas fa-users me-2"></i> Schedule
+                    </a>
+                    <a class="nav-link" href="/track.html" data-page="tracking">
+                        <i class="fas fa-truck me-2"></i> Tracking
+                    </a>
+                    <a class="nav-link" href="/inventory.html" data-page="inventory">
+                        <i class="fas fa-ticket me-2"></i> Inventory
+                    </a>
+                    <a class="nav-link" href="/outlet-report.html" data-page="reports">
+                        <i class="fas fa-chart-bar me-2"></i> Outlet report
+                    </a>
+                </nav>
+            </div>
+
+            <!-- Main Content -->
+            <div class="col-md-10 p-4">
+                <div class="table-container">
+                    <h2 class="table-title">Outlet Request Schedule</h2>
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>Request ID</th>
+                                <th>Outlet Name</th>
+                                <th>Request Date</th>
+                                <th>Cylinders</th>
+                                <th>Status</th>
+                                <th>Confirm Date</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="scheduleTable"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/js/bootstrap.bundle.min.js"></script>
+    <script src="schedule.js" type="module"></script>
+</body>
+</html>
